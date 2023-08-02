@@ -38,6 +38,14 @@ namespace SolutionSelling.Controllers
         }
 
         [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> AccountItems()
+        {
+            var itemsview = await itemsDbContext.Item.ToListAsync();
+            return View(itemsview);
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateItem(AddItem addItem)
         {

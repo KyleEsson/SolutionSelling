@@ -14,6 +14,7 @@ public class Program
 
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
         builder.Services.AddDbContext<ItemsDbContext>(options => options.UseSqlServer(connectionString));
+        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddDefaultIdentity<SolutionSellingUser>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddRoles<IdentityRole>()
