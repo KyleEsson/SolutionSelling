@@ -17,6 +17,7 @@ namespace SolutionSelling.Controllers
             this.itemsDbContext = itemsDbContext;
         }
 
+        // ITEMS FOR SALE PAGE
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> ItemsForSale()
@@ -25,6 +26,16 @@ namespace SolutionSelling.Controllers
             return View(itemsview);
         }
 
+        // ACCOUNT ITEMS PAGE (USER'S ITEMS)
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> AccountItems()
+        {
+            var itemsview = await itemsDbContext.Item.ToListAsync();
+            return View(itemsview);
+        }
+
+        // ADD NEW ITEMS PAGE
         public IActionResult CreateSuccess()
         {
             return View();
@@ -35,14 +46,6 @@ namespace SolutionSelling.Controllers
         public IActionResult CreateItem()
         {
             return View();
-        }
-
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> AccountItems()
-        {
-            var itemsview = await itemsDbContext.Item.ToListAsync();
-            return View(itemsview);
         }
 
         [Authorize]
@@ -65,5 +68,71 @@ namespace SolutionSelling.Controllers
             return RedirectToAction("CreateSuccess");
         }
 
+        // EDIT ITEMS PAGE
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var itemEdit = await itemsDbContext.Item.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (itemEdit != null)
+            {
+                var editItem = new EditItem()
+                {
+                    Id = itemEdit.Id,
+                    UserId = itemEdit.UserId,
+                    Name = itemEdit.Name,
+                    Description = itemEdit.Description,
+                    Price = itemEdit.Price,
+                    Quantity = itemEdit.Quantity
+                };
+
+                return View(editItem);
+            }
+
+
+            return RedirectToAction("AccountItems");
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditItem updateItem)
+        {
+            var itemEdit = await itemsDbContext.Item.FindAsync(updateItem.Id);
+
+            if (itemEdit != null)
+            {
+                itemEdit.Id = updateItem.Id;
+                itemEdit.UserId = updateItem.UserId;
+                itemEdit.Name = updateItem.Name;
+                itemEdit.Description = updateItem.Description;
+                itemEdit.Price = updateItem.Price;
+                itemEdit.Quantity = updateItem.Quantity;
+
+                await itemsDbContext.SaveChangesAsync();
+
+                return RedirectToAction("AccountItems");
+            }
+
+            return RedirectToAction("AccountItems");
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Delete(EditItem deleteItem)
+        {
+            var itemDelete = await itemsDbContext.Item.FindAsync(deleteItem.Id);
+
+            if (itemDelete != null)
+            {
+                itemsDbContext.Item.Remove(itemDelete);
+                await itemsDbContext.SaveChangesAsync();
+
+                return RedirectToAction("AccountItems");
+            }
+
+            return RedirectToAction("AccountItems");
+
+        }
     }
 }

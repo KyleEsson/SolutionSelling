@@ -1,0 +1,38 @@
+﻿@model SolutionSelling.Models.EditItem
+
+@{
+    ViewData["Title"] = "Edit Item";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Edit Item</h1>
+</div>
+
+<form method="post" action="Edit">
+    <div class="mb-3">
+        <label for="" class="form-label">Id</label>
+        <input type="text" class="form-control" asp-for="Id" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">UserId</label>
+        <input type="text" class="form-control" asp-for="UserId" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Name</label>
+        <input type="text" class="form-control" asp-for="Name">
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Description</label>
+        <input type="text" class="form-control" asp-for="Description">
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Price</label>
+        <input type="number" class="form-control" asp-for="Price">
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Quantity</label>
+        <input type="number" class="form-control" asp-for="Quantity">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-danger" asp-action="Delete">Delete</button>
+</form>
