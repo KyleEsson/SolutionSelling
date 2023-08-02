@@ -18,7 +18,6 @@ namespace SolutionSelling.Controllers
         }
 
         // ITEMS FOR SALE PAGE
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> ItemsForSale()
         {
@@ -117,6 +116,7 @@ namespace SolutionSelling.Controllers
             return RedirectToAction("AccountItems");
         }
 
+        // Delete the item from the edit page
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Delete(EditItem deleteItem)
@@ -127,6 +127,11 @@ namespace SolutionSelling.Controllers
             {
                 itemsDbContext.Item.Remove(itemDelete);
                 await itemsDbContext.SaveChangesAsync();
+
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("ItemsForSale");
+                }
 
                 return RedirectToAction("AccountItems");
             }
