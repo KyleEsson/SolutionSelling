@@ -26,6 +26,16 @@ public class Program
 
         builder.Services.AddSingleton<CartService>();
 
+        builder.Services.AddDistributedMemoryCache();
+
+        // cookies to store session data
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromDays(10);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
+
         var app = builder.Build();
 
         using (var scope = app.Services.CreateScope())
@@ -49,6 +59,9 @@ public class Program
         app.UseRouting();
 
         app.UseAuthorization();
+
+        // cookie
+        app.UseSession();
 
         app.MapControllerRoute(
             name: "default",
