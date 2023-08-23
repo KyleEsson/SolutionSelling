@@ -1,4 +1,6 @@
-﻿namespace SolutionSelling.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SolutionSelling.Models
 {
     public class Item
     {
@@ -10,8 +12,14 @@
 
         public string Description { get; set; }
 
-        public float Price { get; set; }
+        public decimal Price { get; set; }
 
         public int Quantity { get; set; }
+
+        [Required]
+        public byte[]? Picture { get; set; }
+
+        [Required]
+        public string? PictureFormat { get; set; }
     }
 }

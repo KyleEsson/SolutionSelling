@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using SolutionSelling.Areas.Identity.Data;
 using SolutionSelling.Areas.Items.Data;
+using SolutionSelling.Models;
 
 public class Program
 {
@@ -23,7 +24,16 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
+        builder.Services.AddSingleton<CartService>();
+
         var app = builder.Build();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+
+            SeedItems.Initialize(services);
+        }
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
@@ -42,50 +52,11 @@ public class Program
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+            pattern: "{controller=Items}/{action=ItemsForSale}/{id?}");
 
         app.MapRazorPages();
 
-        using (var scope = app.Services.CreateScope())
-        {
-            var rolesManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            var roles = new[] { "Admin", "User" };
-
-            foreach (var role in roles)
-            {
-                if (!await rolesManager.RoleExistsAsync(role))
-                {
-                    await rolesManager.CreateAsync(new IdentityRole(role));
-                }
-            }
-        }
-
-        using (var scope = app.Services.CreateScope())
-        {
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<SolutionSellingUser>>();
-
-            var roles = new[] { "Admin", "User" };
-
-            string email = "admin@admin.com";
-            string password = "Admin123!";
-            string firstName = "Admin";
-            string lastName = "Admin";
-
-            if (await userManager.FindByEmailAsync(email) == null)
-            {
-                var user = new SolutionSellingUser();
-                user.FirstName = firstName;
-                user.LastName = lastName;
-                user.UserName = email;
-                user.Email = email;
-
-                await userManager.CreateAsync(user, password);
-
-                await userManager.AddToRoleAsync(user, "Admin");
-
-            }
-        }
 
         app.Run();
     }

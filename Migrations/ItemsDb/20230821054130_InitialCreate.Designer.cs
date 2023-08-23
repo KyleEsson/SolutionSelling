@@ -12,8 +12,8 @@ using SolutionSelling.Areas.Items.Data;
 namespace SolutionSelling.Migrations.ItemsDb
 {
     [DbContext(typeof(ItemsDbContext))]
-    [Migration("20230730052611_itemsmigration")]
-    partial class itemsmigration
+    [Migration("20230821054130_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,8 +39,16 @@ namespace SolutionSelling.Migrations.ItemsDb
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<byte[]>("Picture")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("PictureFormat")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

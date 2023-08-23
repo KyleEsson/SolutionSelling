@@ -4,26 +4,59 @@ using SolutionSelling.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using SolutionSelling.Areas.Items.Data;
+using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SolutionSelling.Controllers
 {
     public class ItemsController : Controller
     {
+        private readonly ILogger<HomeController> _logger;
         private readonly ItemsDbContext itemsDbContext;
+        private readonly CartService _cartService;
 
-        public ItemsController(ItemsDbContext itemsDbContext)
+        public ItemsController(ILogger<HomeController> logger, ItemsDbContext itemsDbContext, CartService cartService)
         {
             this.itemsDbContext = itemsDbContext;
+            _cartService = cartService;
+            _logger = logger;
         }
 
         // ITEMS FOR SALE PAGE
         [HttpGet]
-        public async Task<IActionResult> ItemsForSale()
+        public async Task<IActionResult> ItemsForSale(string searchString, string? ErrorMessage)
         {
-            var itemsview = await itemsDbContext.Item.ToListAsync();
-            return View(itemsview);
+            var items = from i in itemsDbContext.Item
+                         select i;
+            var cart = _cartService.Get();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                items = items.Where(s => s.Name!.Contains(searchString));
+            }
+
+            var ItemVM = new ViewItems
+            {
+                Items = await items.ToListAsync()
+            };
+
+            // Add the message to the ModelState if need be
+            ViewBag.Error = ErrorMessage;
+
+            return View(ItemVM);
         }
+
+        public async Task<IActionResult> Buy(Guid id)
+        {
+            var product = await itemsDbContext.Item.FindAsync(id);
+            if (product != null)
+            {
+                _cartService.Add(product, 1);
+            }
+            return RedirectToAction("ItemsForSale", new { ErrorMessage = "Item added to Cart." });
+        }
+
 
         // ACCOUNT ITEMS PAGE (USER'S ITEMS)
         [Authorize]
@@ -51,6 +84,8 @@ namespace SolutionSelling.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateItem(AddItem addItem)
         {
+
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var item = new Item()
             {
@@ -59,13 +94,34 @@ namespace SolutionSelling.Controllers
                 Name = addItem.Name,
                 Description = addItem.Description,
                 Price = addItem.Price,
-                Quantity = addItem.Quantity
+                Quantity = addItem.Quantity,
+                PictureFormat = addItem.Picture.ContentType
             };
+
+            var memoryStream = new MemoryStream();
+            addItem.Picture.CopyTo(memoryStream);
+            item.Picture = memoryStream.ToArray();
 
             await itemsDbContext.Item.AddAsync(item);
             await itemsDbContext.SaveChangesAsync();
             return RedirectToAction("CreateSuccess");
         }
+
+        // ITEM VIEW PAGE
+        [HttpGet]
+        public async Task<IActionResult> ItemView(Guid id)
+        {
+            var itemView = await itemsDbContext.Item.FirstOrDefaultAsync(x => x.Id == id);
+
+            var viewModel = new ItemView { Name = itemView.Name };
+            viewModel.Picture = Convert.ToBase64String(itemView.Picture);
+            viewModel.PictureFormat = itemView.PictureFormat;
+            viewModel.Description = itemView.Description;
+            viewModel.Name = itemView.Name;
+
+            return View(viewModel);
+        }
+
 
         // EDIT ITEMS PAGE
         [Authorize]
@@ -139,5 +195,11 @@ namespace SolutionSelling.Controllers
             return RedirectToAction("AccountItems");
 
         }
+
+        public IActionResult References()
+        {
+            return View();
+        }
+
     }
 }

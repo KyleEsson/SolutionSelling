@@ -1,7 +1,8 @@
-﻿@model List<SolutionSelling.Models.Item>
+﻿@model SolutionSelling.Models.ViewItems
 @using Microsoft.AspNetCore.Identity
 @using SolutionSelling.Areas.Identity.Data
 @inject UserManager<SolutionSellingUser> UserManager
+@inject CartService cartService
 
 @{
     ViewData["Title"] = "Items For Sale";
@@ -11,35 +12,65 @@
     <h1 class="display-4">@ViewData["Title"]</h1>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<form asp-controller="Items" asp-action="ItemsForSale" method="get">
+    <p class="text-center">
+        <input type="text" asp-for="SearchString" placeholder="Search" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
+<div class="row justify-content-center">
+    <table class="table w-auto align-content-center">
+        <thead class="table-dark">
             <tr>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.Price
-                </td>
-                <td>
-                    @item.Quantity
-                </td>
-                <td>
-                    @if (@User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit/Delete(Admin)</a>
-                        
-                    }
-                </td>
+                <th>Name</th>
+                <th class="text-center">Price</th>
+                <th class="text-center">Quantity</th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
-        }
-<table/>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items!)
+            {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td class="text-center">
+                        @item.Price
+                    </td>
+                    <td class="text-center">
+                        @item.Quantity
+                    </td>
+                    @if (!(@User.IsInRole("Administrator")))
+                    {
+                        <td>
+                            <a class="btn btn-success" asp-action="Buy" asp-route-id="@item.Id">Add to Cart</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" asp-action="ItemView" asp-route-id="@item.Id">View Item</a>
+                        </td>
+                    }
+                    @if (@User.IsInRole("Administrator"))
+                    {
+                        <td>
+                            <a class="btn btn-danger" asp-action="Edit" asp-route-id="@item.Id">Edit/Delete(Admin)</a>
+                        </td>
+
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (ViewBag.Error != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            alert("@ViewBag.Error");
+        };
+    </script>
+}

@@ -1,11 +1,7 @@
 ﻿namespace SolutionSelling.Models
 {
-    public class EditItem
+    public class ItemView
     {
-        public Guid Id { get; set; }
-
-        public string UserId { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -14,7 +10,7 @@
 
         public int Quantity { get; set; }
 
-        public byte[] Picture { get; set; }
+        public string Picture { get; set; }
 
         public string PictureFormat { get; set; }
     }
