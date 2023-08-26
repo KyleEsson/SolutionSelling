@@ -12,8 +12,8 @@ using SolutionSelling.Areas.Items.Data;
 namespace SolutionSelling.Migrations.ItemsDb
 {
     [DbContext(typeof(ItemsDbContext))]
-    [Migration("20230821054130_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230826014006_added purchases")]
+    partial class addedpurchases
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,9 +39,9 @@ namespace SolutionSelling.Migrations.ItemsDb
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Picture")
+                    b.Property<string>("Picture")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PictureFormat")
                         .IsRequired()
@@ -60,6 +60,47 @@ namespace SolutionSelling.Migrations.ItemsDb
                     b.HasKey("Id");
 
                     b.ToTable("Item");
+                });
+
+            modelBuilder.Entity("SolutionSelling.Models.Purchases", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BuyerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Picture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PictureFormat")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SellerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Purchases");
                 });
 #pragma warning restore 612, 618
         }

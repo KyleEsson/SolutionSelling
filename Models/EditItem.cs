@@ -14,7 +14,7 @@
 
         public int Quantity { get; set; }
 
-        public byte[] Picture { get; set; }
+        public string Picture { get; set; }
 
         public string PictureFormat { get; set; }
     }

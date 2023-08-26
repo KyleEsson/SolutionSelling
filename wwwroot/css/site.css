@@ -26,6 +26,11 @@ body {
     height: 500px;
 }
 
+.ItemsForSaleImg {
+    width: 80px;
+    height: 80px;
+}
+
 table.table-fit {
     width: auto !important;
     table-layout: auto !important;
@@ -38,3 +43,7 @@ table.table-fit {
     table.table-fit tbody td, table.table-fit tfoot td {
         width: auto !important;
     }
+
+.bg {
+    background-image: url("../bgr.jpg");
+}

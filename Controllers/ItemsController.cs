@@ -63,8 +63,16 @@ namespace SolutionSelling.Controllers
         [HttpGet]
         public async Task<IActionResult> AccountItems()
         {
-            var itemsview = await itemsDbContext.Item.ToListAsync();
-            return View(itemsview);
+            var items = await itemsDbContext.Item.ToListAsync();
+            var purchase = await itemsDbContext.Purchases.ToListAsync();
+
+            var viewModel = new AccountItemsModel
+            {
+                Items = items,
+                Purchase = purchase
+            };
+
+            return View(viewModel);
         }
 
         // ADD NEW ITEMS PAGE
@@ -84,8 +92,6 @@ namespace SolutionSelling.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateItem(AddItem addItem)
         {
-
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var item = new Item()
             {
@@ -98,9 +104,12 @@ namespace SolutionSelling.Controllers
                 PictureFormat = addItem.Picture.ContentType
             };
 
-            var memoryStream = new MemoryStream();
-            addItem.Picture.CopyTo(memoryStream);
-            item.Picture = memoryStream.ToArray();
+            using (var memoryStream = new MemoryStream())
+            {
+                addItem.Picture.CopyTo(memoryStream);
+                var imageBytes = memoryStream.ToArray();
+                item.Picture = Convert.ToBase64String(imageBytes);
+            }
 
             await itemsDbContext.Item.AddAsync(item);
             await itemsDbContext.SaveChangesAsync();
@@ -114,7 +123,7 @@ namespace SolutionSelling.Controllers
             var itemView = await itemsDbContext.Item.FirstOrDefaultAsync(x => x.Id == id);
 
             var viewModel = new ItemView { Name = itemView.Name };
-            viewModel.Picture = Convert.ToBase64String(itemView.Picture);
+            viewModel.Picture = itemView.Picture;
             viewModel.PictureFormat = itemView.PictureFormat;
             viewModel.Description = itemView.Description;
             viewModel.Name = itemView.Name;

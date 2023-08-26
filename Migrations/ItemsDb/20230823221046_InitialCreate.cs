@@ -21,7 +21,7 @@ namespace SolutionSelling.Migrations.ItemsDb
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    Picture = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PictureFormat = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>

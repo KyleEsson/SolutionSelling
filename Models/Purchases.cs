@@ -2,17 +2,19 @@
 
 namespace SolutionSelling.Models
 {
-    public class Item
+    public class Purchases
     {
         public Guid Id { get; set; }
 
-        public string UserId { get; set; }
+        public string SellerId { get; set; }
+
+        public string BuyerId { get; set; }
 
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal Cost { get; set; }
 
         public int Quantity { get; set; }
 
@@ -21,5 +23,7 @@ namespace SolutionSelling.Models
 
         [Required]
         public string? PictureFormat { get; set; }
+
+        public DateTime PurchaseDate { get; set; }
     }
 }

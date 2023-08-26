@@ -5,7 +5,7 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">@ViewData["Title"]</h1>
+    <h1 class="display-4 fw-bold fs-200">@ViewData["Title"]</h1>
 </div>
 
 @if (Model.CartItems.Count > 0)
@@ -14,10 +14,11 @@
         <table class="table w-auto align-content-center">
             <thead class="table-dark">
                 <tr>
-                    <th>@Html.DisplayNameFor(model => model.CartItems![0].Item.Name)</th>
-                    <th>@Html.DisplayNameFor(model => model.CartItems![0].Quantity)</th>
-                    <th>@Html.DisplayNameFor(model => model.CartItems![0].Item.Price)</th>
-                    <th>@Html.DisplayNameFor(model => model.CartItems![0].Cost)</th>
+                    <th class="align-middle fw-bold">@Html.DisplayNameFor(model => model.CartItems![0].Item.Name)</th>
+                    <th class="text-center align-middle fw-bold"></th>
+                    <th class="text-center align-middle fw-bold">@Html.DisplayNameFor(model => model.CartItems![0].Quantity)</th>
+                    <th class="text-center align-middle fw-bold">@Html.DisplayNameFor(model => model.CartItems![0].Item.Price)</th>
+                    <th class="text-center align-middle fw-bold">@Html.DisplayNameFor(model => model.CartItems![0].Cost)</th>
                     <th></th>
                 </tr>
             </thead>
@@ -25,11 +26,13 @@
                 @foreach (var item in Model.CartItems)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Item.Name)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Item.Price)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Cost)</td>
-                        <td>
+                        <td class="align-middle fw-bold">@Html.DisplayFor(modelItem => item.Item.Name)</td>
+                        <td class="align-middle w-125">
+                            <img class="ItemsForSaleImg" src="data:@item.Item.PictureFormat;base64,@item.Item.Picture" /></td>
+                        <td class="text-center align-middle fw-bold">@Html.DisplayFor(modelItem => item.Quantity)</td>
+                        <td class="text-center align-middle fw-bold">@Html.DisplayFor(modelItem => item.Item.Price)</td>
+                        <td class="text-center align-middle fw-bold">@Html.DisplayFor(modelItem => item.Cost)</td>
+                        <td class="align-middle">
                             <a class="btn btn-danger" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.Item.Id">Remove</a>
                         </td>
                     </tr>
@@ -37,8 +40,11 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3">Total Cost:</td>
-                    <td>@Html.DisplayFor(model => model.TotalCost)</td>
+                    <td class="align-middle fw-bold">Total Cost:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center align-middle fw-bold">@Html.DisplayFor(model => model.TotalCost)</td>
                     <td></td>
                 </tr>
             </tfoot>
@@ -46,10 +52,15 @@
     </div>
     <div class="text-center">
         <a class="btn btn-primary" asp-controller="Items" asp-action="ItemsForSale">Keep Shopping</a>
+        <a class="btn btn-success" asp-controller="Cart" asp-action="Purchase">Purchase</a>
     </div>
 
 }
 else
 {
-    <p>Cart is empty.</p>
+    <p>Redirecting to Homepage</p>
+
+    <script type="text/javascript">
+        window.location.href = '/Items/ItemsForSale'; 
+    </script>
 }

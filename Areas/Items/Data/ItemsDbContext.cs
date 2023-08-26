@@ -11,5 +11,7 @@ namespace SolutionSelling.Areas.Items.Data
 
         public DbSet<Item> Item { get; set; }
 
+        public DbSet<Purchases> Purchases { get; set; }
+
     }
 }
