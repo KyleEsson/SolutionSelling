@@ -14,10 +14,10 @@ namespace SolutionSelling.Models
                 serviceProvider.GetRequiredService<
                     DbContextOptions<ItemsDbContext>>()))
             {
-                // Look for any movies.
+                // LOOK FOR ANY ITEMS IN THE DATABASE AND SEED IF EMPTY
                 if (context.Item.Any())
                 {
-                    return;   // DB has been seeded
+                    return;  
                 }
 
                 byte[] sampleContent = DataHelpers.FromHexString("89504E470D0A1A0A0000000D4948445200000400000003C80806000000470189D40000200049444154789CECBD6DAC6D495ADFF77FAAD6DEE7DC7BBB6F37EDA6339031C2CD40128C261821E238B6456C1C21849C648C250B05E7433C28221882F19861CC6B08B21264F94394489185647FB012DB0A0AC14E267882441834E098");

@@ -1,4 +1,12 @@
-﻿@inject CartService cartService
+﻿@using Microsoft.AspNetCore.Identity;
+@using SolutionSelling.Areas.Identity.Data
+@inject CartService cartService
+@inject UserManager<SolutionSellingUser> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var userId = user?.Id;
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,28 +22,42 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3 navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Items" asp-action="ItemsForSale"><b>SolutionSelling</b></a>
+                <a class="navbar-brand" asp-area="" asp-controller="Items" asp-action="Index"><b>SolutionSelling</b></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Items" asp-action="ItemsForSale">Items For Sale</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Items" asp-action="CreateItem">Add Item</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Items" asp-action="AccountItems">User Items</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Items" asp-action="References">Project References</a>
-                        </li>
+                        @if (!(@User.IsInRole("Administrator")))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Items" asp-action="ItemsForSale">Items For Sale</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Items" asp-action="CreateItem">Add Item</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Items" asp-action="AccountItems">User Panel</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Items" asp-action="References">Project References</a>
+                            </li>
+                        }
+                        @if (@User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Items" asp-action="ItemsForSale">Moderate Items For Sale</a>
+                            </li>
+                        }
+
+
+                        <!-- IJNECT THE CART SERVICE -->
                         @{
                             Cart cart = cartService.Get();
                         }
+
+                        <!-- IF THE CART HAS ITEMS, SHOW THE CART BUTTON -->
                         @if (cart.CartItems.Count > 0)
                         {
                             <li class="nav-item">
@@ -44,6 +66,8 @@
                         }
                     </ul>
                 </div>
+
+                <!-- INCLUDE LOGIN FUNCTIONALITY DUE TO USING ORIGINAL LAYOUT -->
                 <div>
                     <partial name="_LoginPartial" />
                 </div>

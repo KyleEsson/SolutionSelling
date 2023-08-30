@@ -1,4 +1,8 @@
 ﻿@model SolutionSelling.Models.Cart
+@using Microsoft.AspNetCore.Identity
+@using SolutionSelling.Areas.Identity.Data
+@inject UserManager<SolutionSellingUser> UserManager
+@inject CartService cartService
 
 @{
     ViewData["Title"] = "Cart";
@@ -7,6 +11,8 @@
 <div class="text-center">
     <h1 class="display-4 fw-bold fs-200">@ViewData["Title"]</h1>
 </div>
+
+<!-- CHECK IF THE CART CONTAINS ITEMS -->
 
 @if (Model.CartItems.Count > 0)
 {
@@ -23,6 +29,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- LOOP THROUGH THE CART ITEMS  -->
                 @foreach (var item in Model.CartItems)
                 {
                     <tr>
@@ -54,13 +61,33 @@
         <a class="btn btn-primary" asp-controller="Items" asp-action="ItemsForSale">Keep Shopping</a>
         <a class="btn btn-success" asp-controller="Cart" asp-action="Purchase">Purchase</a>
     </div>
+    <div>
+        <!-- DISPLAY ERROR MESSAGE IF THERE IS ONE -->
+        @if (ViewBag.Error != null)
+        {
+            <script type="text/javascript">
+                window.onload = function () {
+                    alert("@ViewBag.Error");
+                };
+            </script>
+        }
+    </div>
+
 
 }
+
+// IF THE CART IS EMPTY, REDIRECT TO THE HOMEPAGE
 else
 {
     <p>Redirecting to Homepage</p>
 
     <script type="text/javascript">
-        window.location.href = '/Items/ItemsForSale'; 
+        window.location.href = '/Items/ItemsForSale';
     </script>
 }
+
+
+
+
+
+

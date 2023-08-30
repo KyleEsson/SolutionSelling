@@ -4,18 +4,19 @@
 @inject UserManager<SolutionSellingUser> UserManager
 
 @{
-    ViewData["Title"] = "User History";
+    ViewData["Title"] = "User Panel";
     var user = await UserManager.GetUserAsync(User);
     var userId = user?.Id;
     var userName = user?.FirstName;
 }
 
-
+<div class="text-center">
+    <h1 class="display-4 fw-bold fs-200">Your Items For Sale</h1>
+</div>
+<!-- IF USER HAS ITEMS FOR SALE, DISPLAY THEM HERE  -->
 @if (Model.Items.Any(item => item.UserId == userId))
 {
-    <div class="text-center">
-        <h1 class="display-4 fw-bold fs-200">Your Items For Sale</h1>
-    </div>
+
 
     <div class="row justify-content-center">
         <table class="table w-auto align-content-center">
@@ -29,6 +30,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- LOOP THROUGH ITEMS AND RETREIVE USER ITEMS FOR A TABLE  -->
                 @foreach (var item in Model.Items)
                 {
                     if (userId == item.UserId)
@@ -56,7 +58,14 @@
         </table>
     </div>
 }
+<div class="text-center">
+    <a asp-area="" asp-controller="Items" asp-action="CreateItem" class="btn btn-success text-center">Add New Item</a>
+</div>
 
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<!-- IF THE USER HAS ANY PURCHASES, DISPLAY THEM HERE  -->
 @if (Model.Purchase.Any(purchases => purchases.BuyerId == userId))
 {
     <div class="text-center">
@@ -75,6 +84,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- LOOP THROUGH THE USERS PURCHASES  -->
                 @foreach (var purchase in Model.Purchase)
                 {
                     if (userId == purchase.BuyerId)
@@ -104,6 +114,7 @@
     </div>
 }
 
+<!-- IF THE USER SOLD ANY ITEMS, DISPLAY THE ORDERS HERE  -->
 @if (Model.Purchase.Any(purchases => purchases.SellerId == userId))
 {
     <div class="text-center">
@@ -122,6 +133,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- LOOP THROUGH THE USERS PURCHASES  -->
                 @foreach (var purchase in Model.Purchase)
                 {
                     if (userId == purchase.SellerId)
@@ -151,4 +163,40 @@
     </div>
 }
 
+<!-- IF THE USER HAS SOLD AN ITEM, DISPLAY THE TOP BUYERS HERE  -->
+@if (Model.TopBuyers.Any())
+{
+    <div class="text-center">
+        <h1 class="display-4 fw-bold fs-200">Top Buyers</h1>
+    </div>
 
+    <div class="row justify-content-center">
+        <table class="table w-auto align-content-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Buyer ID</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Total Spent</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- LOOP THROUGH TOP BUYERS  -->
+                @foreach (var buyer in Model.TopBuyers)
+                {
+                    var BuyerName = await UserManager.FindByIdAsync(buyer.BuyerId);
+                    <tr>
+                        <td class="align-middle fw-bold">
+                            @BuyerName?.Id
+                        </td>
+                        <td class="text-center align-middle fw-bold">
+                            @BuyerName?.FirstName @BuyerName?.LastName
+                        </td>
+                        <td class="text-center align-middle">
+                            <b>$@buyer.TotalSpent</b>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

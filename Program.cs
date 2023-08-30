@@ -43,6 +43,8 @@ public class Program
             var services = scope.ServiceProvider;
 
             SeedItems.Initialize(services);
+
+            SeedPurchases.Initialize(services);
         }
 
         // Configure the HTTP request pipeline.
@@ -65,7 +67,7 @@ public class Program
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Items}/{action=ItemsForSale}/{id?}");
+            pattern: "{controller=Items}/{action=Index}/{id?}");
 
         app.MapRazorPages();
 

@@ -35,9 +35,11 @@
             </tr>
         </thead>
         <tbody>
+            <!-- LOOP THROUGH THE ITEMS IN THE ITEM MODEL  -->
             @foreach (var item in Model.Items!)
 
             {
+                <!-- DONT SHOW THE CURRENT USERS ITEMS  -->
                 if (!(userId == item.UserId))
                 {
                     <tr>
@@ -53,15 +55,26 @@
                         <td class="text-center align-middle">
                             <b>@item.Quantity</b>
                         </td>
+                        <!-- HIDE CART INFO FOR ADMIN  -->
                         @if (!(@User.IsInRole("Administrator")))
                         {
-                            <td class="align-middle">
-                                <a class="btn btn-success" asp-action="Buy" asp-route-id="@item.Id">Add to Cart</a>
-                            </td>
+                            @if (item.Quantity == 0)
+                            {
+                                <td class="align-middle">
+                                    <b class="text-danger">Out of Stock</b>
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="align-middle">
+                                    <a class="btn btn-success" asp-action="Buy" asp-route-id="@item.Id">Add to Cart</a>
+                                </td>
+                            }
                             <td class="align-middle">
                                 <a class="btn btn-primary align-middle" asp-action="ItemView" asp-route-id="@item.Id">View Item</a>
                             </td>
                         }
+                        <!-- MODERATION BUTTON FOR ADMINS  -->
                         @if (@User.IsInRole("Administrator"))
                         {
                             <td class="align-middle">
@@ -77,6 +90,7 @@
     </table>
 </div>
 
+<!-- CHECKS FOR ERRORS TO SHOW IN POP UP WINDOW  -->
 @if (ViewBag.Error != null)
 {
     <script type="text/javascript">

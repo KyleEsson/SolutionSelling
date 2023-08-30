@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace SolutionSelling.Areas.Identity.Data;
 
-// Add profile data for application users by adding properties to the SolutionSellingUser class
+// ADD FIRST AND LAST NAME TO USER
 public class SolutionSellingUser : IdentityUser
 {
     public string? FirstName { get; set; }

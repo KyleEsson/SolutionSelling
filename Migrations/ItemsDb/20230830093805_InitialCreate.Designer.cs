@@ -12,8 +12,8 @@ using SolutionSelling.Areas.Items.Data;
 namespace SolutionSelling.Migrations.ItemsDb
 {
     [DbContext(typeof(ItemsDbContext))]
-    [Migration("20230826014006_added purchases")]
-    partial class addedpurchases
+    [Migration("20230830093805_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,6 +90,9 @@ namespace SolutionSelling.Migrations.ItemsDb
                     b.Property<string>("PictureFormat")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
